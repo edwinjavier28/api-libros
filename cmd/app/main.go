@@ -1,6 +1,9 @@
 package main
 
 import (
+	"github.com/api-libros/internal/adapters/http"
+	"github.com/api-libros/internal/adapters/repository"
+	usecases "github.com/api-libros/internal/adapters/use_cases"
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,20 +14,18 @@ func main() {
 	productoRepo := repository.NewInMemoryProductoRepository()
 
 	// Crear el caso de uso
-	getProductoUseCase := &usecases.GetProductoUseCase{
+	getProductoUseCase := &usecases.LibroUseCase{
 		Repo: productoRepo,
 	}
 
 	// Crear el handler
-	productoHandler := &http.ProductoHandler{
+	LibrosHandler := &http.LibroHandler{
 		UseCase: getProductoUseCase,
 	}
 
 	// Definir la ruta
-	r.GET("/producto/:id", productoHandler.GetProducto)
-	r.PATCH("/producto/:id", productoHandler.UpdatePrecio)
-	r.POST("/producto/:id", productoHandler.PostPrecio)
-	r.DELETE("/producto/:id", productoHandler.DeletePrecio)
+
+	r.POST("/Libros/:id", LibrosHandler.PostLibro)
 
 	// Iniciar el servidor
 	r.Run(":8086")

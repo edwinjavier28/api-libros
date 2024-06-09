@@ -3,16 +3,18 @@ package http
 import (
 	"net/http"
 
+	"github.com/api-libros/internal/adapters/domain"
+	usecases "github.com/api-libros/internal/adapters/use_cases"
 	"github.com/gin-gonic/gin"
 )
 
 type LibroHandler struct {
-	UseCase *usecases.GetProductoUseCase
+	UseCase *usecases.LibroUseCase
 }
 
 func (h *LibroHandler) GetLibro(c *gin.Context) {
 	id := c.Param("id")
-	Libro, err := h.UseCase.Execute(id)
+	Libro, err := h.UseCase.Execute(id, domain.LibroRequest{})
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Libro no encontrado"})
 		return
@@ -22,22 +24,14 @@ func (h *LibroHandler) GetLibro(c *gin.Context) {
 
 func (h *LibroHandler) PostLibro(c *gin.Context) {
 	id := c.Param("id")
-	type LibroRequest struct {
-		Nombre     string  `json:"Nombre"`
-		Editorial  string  `json:"Editorial"`
-		Autor      string  `json:"Autor"`
-		Precio     float64 `json:"Precio"`
-		Cantidades int     `json:"Cantidades"`
-		Edicion    int     `json:"Edicion"`
-		Bestseller bool    `json:"Bestseller"`
-	}
-	var req LibroRequest
+
+	var req domain.LibroRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Datos inválidos"})
 		return
 	}
 
-	libro, err := h.UseCase.PostExecute(id, req.Nombre, req.Precio)
+	libro, err := h.UseCase.PostExecute(id, req)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Libro no encontrado"})
 		return
