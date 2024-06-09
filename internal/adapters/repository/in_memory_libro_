@@ -1,0 +1,72 @@
+package repository
+
+import (
+	"fmt"
+
+	"internal\adapters\domain\libro.go"
+)
+
+// InMemoryProductoRepository es un repositorio en memoria para productos
+type InMemoryProductoRepository struct {
+	libro map[string]*domain.Libro
+}
+
+func NewInMemoryProductoRepository() *InMemoryLibroRepository {
+	return &InMemoryLibroRepository{
+		libro: map[string]*domain.Libro{
+			"1": {Nombre: "Lavoragine", Editorial: "Larouse", Autor: "Jose", Precio: 100.0, Cantidades: 3, Edicion: 2, Bestseller: true },
+			"1": {Nombre: "El Coronel", Editorial: "Manba", Autor: "Gabriel", Precio: 300.0, Cantidades: 2, Edicion: 1, Bestseller: true },
+		},
+	}
+}
+
+func (repo *InMemoryLibroRepository) GetProductoByID(Nombre string) (*domain.Libro, error) {
+	if libro, ok := repo.libro[Nombre]; ok {
+		return libro, nil
+	}
+	return nil, fmt.Errorf("libro no encontrado")
+}
+
+func (repo *InMemoryLibroRepository) PachtLibroByID(nombre string, editorial string, autor string, precio float64, cantidades int, edicion int, bestseller bool ) (*domain.Libro, error) {
+	if libro, ok := repo.libro[nombre]; ok {
+		libro.Precio = precio
+		return libro, nil
+	}
+	return nil, fmt.Errorf("libro no encontrado")
+}
+func (repo *InMemoryLibroRepository) PostProductoByID(nombre string, editorial string, autor string, precio float64, cantidades int, edicion int, bestseller bool) (*domain.Libro, error) {
+	if _, ok := repo.libro[nombre]; ok {
+		return nil, fmt.Errorf("El producto ya existe")
+	}
+
+	producto := &domain.Producto{
+		Nombre: nombre,
+		Editorial : editorial,
+		Autor : autor,
+		Precio: precio,
+		Cantidades : cantidades,
+		Edicion : edicion,
+		Bestseller : bestseller,
+	}
+	repo.libro[nombre] = libro
+	return libro, nil
+}
+func (repo *InMemoryLibroRepository) DeleteLibroByID(nombre string) (*domain.Libro, error) {
+	if _, ok := repo.libro[nombre]; ok {
+		delete(repo.libro, nombre)
+
+		producto := &domain.Libro{
+		Nombre: nombre,
+		Editorial : "",
+		Autor : "",
+		Precio: 0,
+		Cantidades : 0,
+		Edicion : 0,
+		Bestseller : false,
+		}
+
+		return libro, nil
+	}
+	return nil, fmt.Errorf("El libro no existe, por lo tanto no se puede eliminar")
+
+}
