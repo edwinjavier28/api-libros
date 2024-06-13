@@ -9,7 +9,7 @@ import (
 type LibroRepository interface {
 	GetLibroByID(id string) (*domain.ResponseLibro, error)
 	PostLibroByID(id string, req domain.LibroRequest) (*domain.ResponseLibro, error)
-	DeleteLibroByID(nombre string) (*domain.ResponseLibro, error)
+	DeleteLibroByID(id string) (*domain.ResponseLibro, error)
 }
 
 // InMemoryProductoRepository es un repositorio en memoria para productos
@@ -21,7 +21,7 @@ func NewInMemoryProductoRepository() *InMemoryLibroRepository {
 	return &InMemoryLibroRepository{
 		libro: map[string]*domain.ResponseLibro{
 			"1": {Nombre: "Lavoragine", Editorial: "Larouse", Autor: "Jose", Precio: 100.0, Cantidades: 3, Edicion: 2, BestSeller: true},
-			"2": {Nombre: "El Coronel", Editorial: "Manba", Autor: "Gabriel", Precio: 300.0, Cantidades: 2, Edicion: 1, BestSeller: true},
+			"2": {Nombre: "El Coronel", Editorial: "Mamba", Autor: "Gabriel", Precio: 300.0, Cantidades: 2, Edicion: 1, BestSeller: true},
 		},
 	}
 }
@@ -34,11 +34,12 @@ func (repo *InMemoryLibroRepository) GetLibroByID(id string) (*domain.ResponseLi
 }
 
 func (repo *InMemoryLibroRepository) PostLibroByID(id string, req domain.LibroRequest) (*domain.ResponseLibro, error) {
-	if _, ok := repo.libro[req.Nombre]; ok {
+	if _, ok := repo.libro[id]; ok {
 		return nil, fmt.Errorf("El producto ya existe")
 	}
 
 	libro := &domain.ResponseLibro{
+		ID:         id,
 		Nombre:     req.Nombre,
 		Editorial:  req.Editorial,
 		Autor:      req.Autor,
@@ -47,7 +48,7 @@ func (repo *InMemoryLibroRepository) PostLibroByID(id string, req domain.LibroRe
 		Edicion:    req.Edicion,
 		BestSeller: req.Bestseller,
 	}
-	repo.libro[req.Nombre] = libro
+	repo.libro[id] = libro
 	return libro, nil
 }
 func (repo *InMemoryLibroRepository) DeleteLibroByID(id string) (*domain.ResponseLibro, error) {

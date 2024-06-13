@@ -14,12 +14,13 @@ type LibroHandler struct {
 
 func (h *LibroHandler) GetLibro(c *gin.Context) {
 	id := c.Param("id")
-	Libro, err := h.UseCase.Execute(id, domain.LibroRequest{})
+
+	libro, err := h.UseCase.Execute(id, domain.LibroRequest{})
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Libro no encontrado"})
 		return
 	}
-	c.JSON(http.StatusOK, Libro)
+	c.JSON(http.StatusOK, libro)
 }
 
 func (h *LibroHandler) PostLibro(c *gin.Context) {
@@ -38,7 +39,7 @@ func (h *LibroHandler) PostLibro(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, libro)
 }
-func (h *LibroHandler) DeletePrecio(c *gin.Context) {
+func (h *LibroHandler) DeleteLibro(c *gin.Context) {
 	id := c.Param("id")
 
 	libro, err := h.UseCase.DeleteExecute(id)

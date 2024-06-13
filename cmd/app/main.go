@@ -26,7 +26,8 @@ func main() {
 	// Definir la ruta
 
 	r.POST("/Libros/:id", LibrosHandler.PostLibro)
-
+	r.GET("/Libros/:id", LibrosHandler.GetLibro)
+	r.DELETE("/Libros/:id", LibrosHandler.DeleteLibro)
 	// Iniciar el servidor
-	r.Run(":8086")
+	r.Run(":8088")
 }
